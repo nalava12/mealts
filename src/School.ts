@@ -24,7 +24,7 @@ export class School {
     this.code = code
     this.monthlyMenuCache = new Map()
     this.monthlyScheduleCache = new Map()
-    this.urlAdapter = urlAdapter || FetchUrlAdapter.Instance
+    this.urlAdapter = urlAdapter || NativeUrlAdapter.Instance
   }
 
   async getMonthlyMenu(year: number, month: number): Promise<SchoolMenu[]> {
@@ -95,7 +95,7 @@ export class School {
     targetUrl += '&';
     return new Promise<School>((resolve, reject) => {
       try {
-      (urlAdapter || FetchUrlAdapter.Instance).getContentFromURL(new URL(targetUrl)).then(content => {
+      (urlAdapter || NativeUrlAdapter.Instance).getContentFromURL(new URL(targetUrl)).then(content => {
         content = Utils.before(Utils.after(content, "orgCode"), "schulCrseScCodeNm");
 
         let schoolCode = content.substring(3, 13);
@@ -142,20 +142,6 @@ export namespace School {
 
 export interface UrlAdapter {
   getContentFromURL: (url: URL) => Promise<string>
-}
-
-export class FetchUrlAdapter implements UrlAdapter {
-  private static _instance: FetchUrlAdapter
-  private constructor() {}
-  public static get Instance() {
-    return this._instance || (this._instance = new this())
-  }
-
-  getContentFromURL(url: URL) {
-    return new Promise<string>((resolve, reject) => {
-      fetch(url.href).then(res => res.text()).then(resolve).catch(reject)
-    })
-  }
 }
 
 export class NativeUrlAdapter implements UrlAdapter {
