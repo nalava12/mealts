@@ -13,18 +13,16 @@ export class School {
   type: School.Type
   region: School.Region
   code: string
-  urlAdapter: UrlAdapter
 
   monthlyMenuCache: Map<number, SchoolMenu[]>
   monthlyScheduleCache: Map<number, SchoolSchedule[]>
 
-  constructor(type: School.Type, region: School.Region, code: string, urlAdapter?: UrlAdapter) {
+  constructor(type: School.Type, region: School.Region, code: string) {
     this.type = type
     this.region = region
     this.code = code
     this.monthlyMenuCache = new Map()
     this.monthlyScheduleCache = new Map()
-    this.urlAdapter = urlAdapter || NativeUrlAdapter.Instance
   }
 
   async getMonthlyMenu(year: number, month: number): Promise<SchoolMenu[]> {
@@ -41,7 +39,7 @@ export class School {
 
     return new Promise<SchoolMenu[]>((resolve, reject) => {
       try {
-        this.urlAdapter.getContentFromURL(new URL(targetUrl)).then(content => {
+        School.getContentFromUrl(new URL(targetUrl)).then(content => {
           content = Utils.before(Utils.after(content, "<tbody>"), "</tbody>")
   
           let monthlyMenu = SchoolMenuParser.parse(content)
@@ -70,7 +68,7 @@ export class School {
 
     return new Promise<SchoolSchedule[]>((resolve, reject) => {
       try {
-        this.urlAdapter.getContentFromURL(new URL(targetUrl)).then(content => {
+        School.getContentFromUrl(new URL(targetUrl)).then(content => {
           content = Utils.before(Utils.after(content, "<tbody>"), "</tbody>")
   
           let monthlySchedule = SchoolScheduleParser.parse(content)
@@ -84,18 +82,36 @@ export class School {
     })
   }
 
+  private static getContentFromUrl(url: URL): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      https.get(url, res => {
+        let resData = ''
+        res.on('data', chunk => {
+          resData += chunk
+        })
+
+        res.on('end', () => {
+          resolve(resData)
+        })
+
+        res.on('error', reject)
+      })
+    })
+  }
+
   clearCache() {
     this.monthlyMenuCache.clear()
     this.monthlyScheduleCache.clear()
   }
 
-  static async find(region: School.Region, name: string, urlAdapter?: UrlAdapter): Promise<School> {
+  static async find(region: School.Region, name: string): Promise<School> {
     let targetUrl = `https://par.${region}/${School.SCHOOL_CODE_URL}`;
     targetUrl += `?kraOrgNm=${encodeURIComponent(name)}`;
     targetUrl += '&';
+    
     return new Promise<School>((resolve, reject) => {
       try {
-      (urlAdapter || NativeUrlAdapter.Instance).getContentFromURL(new URL(targetUrl)).then(content => {
+      School.getContentFromUrl(new URL(targetUrl)).then(content => {
         content = Utils.before(Utils.after(content, "orgCode"), "schulCrseScCodeNm");
 
         let schoolCode = content.substring(3, 13);
@@ -138,33 +154,4 @@ export namespace School {
     JEONNAM = "jne.go.kr",
     JEJU = "jje.go.kr"
   }  
-}
-
-export interface UrlAdapter {
-  getContentFromURL: (url: URL) => Promise<string>
-}
-
-export class NativeUrlAdapter implements UrlAdapter {
-  private static _instance: NativeUrlAdapter
-  private constructor() {}
-  public static get Instance() {
-    return this._instance || (this._instance = new this())
-  }
-
-  getContentFromURL(url: URL) {
-    return new Promise<string>((resolve, reject) => {
-      https.get(url, res => {
-        let resData = ''
-        res.on('data', chunk => {
-          resData += chunk
-        })
-
-        res.on('end', () => {
-          resolve(resData)
-        })
-
-        res.on('error', reject)
-      })
-    })
-  }
 }

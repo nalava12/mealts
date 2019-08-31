@@ -2,18 +2,18 @@
   "name": "mealts",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/he": "^1.1.0",
     "@types/node": "^12.0.4",
     "typescript": "^3.5.1"
   },
   "dependencies": {
-    "he": "^1.2.0"
+    "he": "^1.2.0",
+    "@types/he": "^1.1.0"
   }
 }
