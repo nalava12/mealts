@@ -117,7 +117,7 @@ export class School {
         let schoolCode = content.substring(3, 13);
         let schoolType = Utils.before(Utils.after(content, 'schulCrseScCode\":\"'), '\"');
         
-        let enumSchoolType = School.Type[Object.keys(School.Type)[parseInt(schoolType) - 1] as any] as School.Type;
+        let enumSchoolType = schoolType as School.Type
         resolve(new School(enumSchoolType, region, schoolCode))
         }).catch(reject)
       } catch (e) {

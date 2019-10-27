@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var SchoolMenu_1 = require("./SchoolMenu");
+const SchoolMenu_1 = require("./SchoolMenu");
 var SchoolMenuParser;
 (function (SchoolMenuParser) {
     function parse(rawData) {
         if (rawData.length < 1)
             throw new Error('불러온 데이터가 올바르지 않습니다.');
-        var monthlyMenu = [];
+        let monthlyMenu = [];
         rawData = rawData.replace(/\s+/g, "");
-        var buffer = [];
-        var inDiv = false;
+        let buffer = [];
+        let inDiv = false;
         try {
-            for (var i = 0; i < rawData.length; i++) {
+            for (let i = 0; i < rawData.length; i++) {
                 if (rawData[i] == 'v') {
                     if (inDiv) {
                         buffer.splice(buffer.length - 4);
@@ -36,13 +36,13 @@ var SchoolMenuParser;
     }
     SchoolMenuParser.parse = parse;
     function parseDay(rawData) {
-        var menu = new SchoolMenu_1.SchoolMenu();
+        let menu = new SchoolMenu_1.SchoolMenu();
         rawData = rawData.replace("(석식)", "");
         rawData = rawData.replace("(선)", "");
-        var chunk = rawData.split('<br/>');
-        var parsingMode = 0;
-        var menuStrings = ["", "", ""];
-        for (var i = 1; i < chunk.length; i++) {
+        let chunk = rawData.split('<br/>');
+        let parsingMode = 0;
+        let menuStrings = ["", "", ""];
+        for (let i = 1; i < chunk.length; i++) {
             if (chunk[i].trim().length < 1)
                 continue;
             switch (chunk[i]) {

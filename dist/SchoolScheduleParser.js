@@ -1,26 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var SchoolSchedule_1 = require("./SchoolSchedule");
-var Utils_1 = require("./Utils");
+const SchoolSchedule_1 = require("./SchoolSchedule");
+const Utils_1 = require("./Utils");
 var SchoolScheduleParser;
 (function (SchoolScheduleParser) {
-    var schedulePattern = /\<strong\>\<\/strong\>/;
+    let schedulePattern = /\<strong\>\<\/strong\>/;
     function parse(rawData) {
         if (rawData.length < 1)
             throw new Error('불러온 데이터가 올바르지 않습니다.');
-        var monthlySchedule = [];
+        let monthlySchedule = [];
         rawData = rawData.replace(/\s+/g, "");
-        var chunk = rawData.split("textL\">");
+        let chunk = rawData.split("textL\">");
         try {
-            for (var i = 1; i < chunk.length; i++) {
-                var trimmed = Utils_1.Utils.before(chunk[i], "</div>");
-                var date = Utils_1.Utils.before(Utils_1.Utils.after(trimmed, ">"), "</em>");
+            for (let i = 1; i < chunk.length; i++) {
+                let trimmed = Utils_1.Utils.before(chunk[i], "</div>");
+                let date = Utils_1.Utils.before(Utils_1.Utils.after(trimmed, ">"), "</em>");
                 if (date.length < 1)
                     continue;
-                var schedule = [];
+                let schedule = [];
                 while (trimmed.includes("<strong>")) {
-                    var name_1 = Utils_1.Utils.before(Utils_1.Utils.after(trimmed, "<strong>"), "</strong>");
-                    schedule.push(name_1);
+                    let name = Utils_1.Utils.before(Utils_1.Utils.after(trimmed, "<strong>"), "</strong>");
+                    schedule.push(name);
                     schedule.push("\n");
                     trimmed = Utils_1.Utils.after(trimmed, "</strong>");
                 }

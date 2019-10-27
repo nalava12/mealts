@@ -1,12 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var SchoolSchedule = /** @class */ (function () {
-    function SchoolSchedule(schedule) {
+class SchoolSchedule {
+    constructor(schedule) {
         this.schedule = schedule || "";
     }
-    SchoolSchedule.prototype.toString = function () {
+    toString() {
         return this.schedule;
-    };
-    return SchoolSchedule;
-}());
+    }
+}
 exports.SchoolSchedule = SchoolSchedule;
