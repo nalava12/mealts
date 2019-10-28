@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -36,7 +37,7 @@ class School {
             targetUrl += '&';
             return new Promise((resolve, reject) => {
                 try {
-                    School.getContentFromUrl(new URL(targetUrl)).then(content => {
+                    School.getContentFromUrl(targetUrl).then(content => {
                         content = Utils_1.Utils.before(Utils_1.Utils.after(content, "<tbody>"), "</tbody>");
                         let monthlyMenu = SchoolMenuParser_1.SchoolMenuParser.parse(content);
                         this.monthlyMenuCache.set(cacheKey, monthlyMenu);
@@ -63,7 +64,7 @@ class School {
             targetUrl += '&';
             return new Promise((resolve, reject) => {
                 try {
-                    School.getContentFromUrl(new URL(targetUrl)).then(content => {
+                    School.getContentFromUrl(targetUrl).then(content => {
                         content = Utils_1.Utils.before(Utils_1.Utils.after(content, "<tbody>"), "</tbody>");
                         let monthlySchedule = SchoolScheduleParser_1.SchoolScheduleParser.parse(content);
                         this.monthlyScheduleCache.set(cacheKey, monthlySchedule);
@@ -101,7 +102,7 @@ class School {
             targetUrl += '&';
             return new Promise((resolve, reject) => {
                 try {
-                    School.getContentFromUrl(new URL(targetUrl)).then(content => {
+                    School.getContentFromUrl(targetUrl).then(content => {
                         content = Utils_1.Utils.before(Utils_1.Utils.after(content, "orgCode"), "schulCrseScCodeNm");
                         let schoolCode = content.substring(3, 13);
                         let schoolType = Utils_1.Utils.before(Utils_1.Utils.after(content, 'schulCrseScCode\":\"'), '\"');
@@ -116,10 +117,10 @@ class School {
         });
     }
 }
+exports.School = School;
 School.MONTHLY_MENU_URL = "sts_sci_md00_001.do";
 School.SCHEDULE_URL = "sts_sci_sf01_001.do";
 School.SCHOOL_CODE_URL = "spr_ccm_cm01_100.do";
-exports.School = School;
 (function (School) {
     let Type;
     (function (Type) {

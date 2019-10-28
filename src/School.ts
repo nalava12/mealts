@@ -39,7 +39,7 @@ export class School {
 
     return new Promise<SchoolMenu[]>((resolve, reject) => {
       try {
-        School.getContentFromUrl(new URL(targetUrl)).then(content => {
+        School.getContentFromUrl(targetUrl).then(content => {
           content = Utils.before(Utils.after(content, "<tbody>"), "</tbody>")
   
           let monthlyMenu = SchoolMenuParser.parse(content)
@@ -68,7 +68,7 @@ export class School {
 
     return new Promise<SchoolSchedule[]>((resolve, reject) => {
       try {
-        School.getContentFromUrl(new URL(targetUrl)).then(content => {
+        School.getContentFromUrl(targetUrl).then(content => {
           content = Utils.before(Utils.after(content, "<tbody>"), "</tbody>")
   
           let monthlySchedule = SchoolScheduleParser.parse(content)
@@ -82,7 +82,7 @@ export class School {
     })
   }
 
-  private static getContentFromUrl(url: URL): Promise<string> {
+  private static getContentFromUrl(url: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       https.get(url, res => {
         let resData = ''
@@ -111,7 +111,7 @@ export class School {
     
     return new Promise<School>((resolve, reject) => {
       try {
-      School.getContentFromUrl(new URL(targetUrl)).then(content => {
+      School.getContentFromUrl(targetUrl).then(content => {
         content = Utils.before(Utils.after(content, "orgCode"), "schulCrseScCodeNm");
 
         let schoolCode = content.substring(3, 13);
